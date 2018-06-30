@@ -1,0 +1,4 @@
+target/
+.idea/
+*.tar
+src/**/resources/*.mp3
