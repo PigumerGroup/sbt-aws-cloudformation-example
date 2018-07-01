@@ -1,6 +1,12 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Resources:
-  MyQueue:
-    Type: "AWS::SQS::Queue"
+  SampleQueue:
+    Type: AWS::SQS::Queue
     Properties:
-      QueueName: "SampleQueue"
+      QueueName: SampleQueue
+Outputs:
+  SampleQueueARN:
+    Value:
+      Fn::GetAtt:
+      - SampleQueue
+      - Arn
