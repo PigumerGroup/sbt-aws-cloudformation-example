@@ -10,3 +10,5 @@ Outputs:
       Fn::GetAtt:
       - SampleQueue
       - Arn
+    Export:
+      Name: SampleQueueARN

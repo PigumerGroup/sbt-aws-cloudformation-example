@@ -3,6 +3,8 @@ import sbt.Keys._
 import jp.pigumer.sbt.cloud.aws.cloudformation._
 
 val BucketName = sys.env.get("BUCKET_NAME")
+val listExports = taskKey[Unit]("")
+val showARN = taskKey[Unit]("")
 
 lazy val root = (project in file("."))
   .enablePlugins(CloudformationPlugin)
@@ -36,5 +38,12 @@ lazy val root = (project in file("."))
         stackName = "sqs",
         template = "sqs.yaml"
       )
-    )
+    ),
+    listExports := {
+      awscfListExports.value.foreach(e ⇒ println(s"${e.name}, ${e.value}"))
+    },
+    showARN := {
+      val arn = awscfGetValue.toTask(" SampleQueueARN").value
+      println(arn)
+    }
   )
