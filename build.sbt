@@ -1,10 +1,12 @@
 import Dependencies._
 import sbt.Keys._
 import jp.pigumer.sbt.cloud.aws.cloudformation._
+import jp.pigumer.sbt.cloud.aws.ecr.AwsecrCommands
 
 val BucketName = sys.env.get("BUCKET_NAME")
 
-val listExports = taskKey[Unit]("")
+val awsecrPush = taskKey[Unit]("Push")
+val showExports = taskKey[Unit]("showExports")
 val showARN = taskKey[Unit]("")
 
 lazy val commonSettings = Seq(
@@ -14,7 +16,7 @@ lazy val commonSettings = Seq(
 )
 
 lazy val root = (project in file("."))
-  .aggregate(pollyTask
+  .aggregate(exampleTask
     , castExample
     , javaSoundExample)
   .enablePlugins(CloudformationPlugin)
@@ -54,18 +56,34 @@ lazy val root = (project in file("."))
       Alias("ecscluster") → CloudformationStack(
         stackName = "example-ecscluster",
         template = "ecscluster.yaml"
-      )
+      ),
+      Alias("task") → CloudformationStack(
+          stackName = "example-task",
+          template = "example-task.yaml",
+          parameters = Map(
+            "Image" → s"${(awsecrDomain in awsecr).value}/example-task:${version.value}",
+            "BucketName" → BucketName.get
+          ),
+          capabilities = Seq("CAPABILITY_IAM")
+        )
     ),
-    listExports := {
+    showExports := {
       awscfListExports.value.foreach(e ⇒ println(s"${e.name}, ${e.value}"))
     },
     showARN := {
       val arn = awscfGetValue.toTask(" SampleQueueARN").value
       println(arn)
+    },
+    awsecrPush := {
+      val docker = (awsecrDockerPath in awsecr).value
+      val source = s"${(packageName in exampleTask).value}:${version.value}"
+      val target = s"${(awsecrDomain in awsecr).value}/${awscfGetValue.toTask(" ECR").value}:${version.value}"
+      AwsecrCommands.tag(docker, source, target)
+      AwsecrCommands.push(docker, target)
     }
   )
 
-lazy val pollyTask = (project in file("polly-task"))
+lazy val exampleTask = (project in file("example-task"))
   .enablePlugins(JavaAppPackaging, AshScriptPlugin, DockerPlugin)
   .settings(commonSettings: _*)
   .settings(

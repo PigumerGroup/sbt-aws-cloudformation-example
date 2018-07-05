@@ -2,6 +2,8 @@ AWSTemplateFormatVersion: '2010-09-09'
 Resources:
   ECR:
     Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: example-task
 Outputs:
   ECR:
     Value: !Ref ECR

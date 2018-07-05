@@ -1,0 +1,87 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  Image:
+    Type: String
+  BucketName:
+    Type: String
+Resources:
+  ExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - "ecs-tasks.amazonaws.com"
+          Action:
+          - "sts:AssumeRole"
+      Path: /
+      Policies:
+      - PolicyName: executionRolePolicy
+        PolicyDocument:
+          Statement:
+          - Effect: Allow
+            Action:
+              - 'ecr:GetAuthorizationToken'
+              - 'ecr:BatchCheckLayerAvailability'
+              - 'ecr:GetDownloadUrlForLayer'
+              - 'ecr:BatchGetImage'
+              - 'logs:CreateLogStream'
+              - 'logs:PutLogEvents'
+            Resource: '*'
+  TaskRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - "ecs-tasks.amazonaws.com"
+          Action:
+          - "sts:AssumeRole"
+      Path: /
+      Policies:
+      - PolicyName: taskRolePolicy
+        PolicyDocument:
+          Statement:
+          - Effect: Allow
+            Action:
+              - 's3:*'
+              - 'polly:*'
+            Resource: '*'
+  Log:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: 'example-ecs'
+  Task:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      ContainerDefinitions:
+      - Name: example-task
+        Environment:
+        - Name: 'BUCKET_NAME'
+          Value: !Ref BucketName
+        Image: !Ref 'Image'
+        LogConfiguration:
+          LogDriver: 'awslogs'
+          Options:
+            awslogs-group: !Ref Log
+            awslogs-region: !Ref AWS::Region
+            awslogs-stream-prefix: "fargate"
+        MemoryReservation: 512
+      Cpu: 256
+      ExecutionRoleArn:
+        Fn::GetAtt:
+        - ExecutionRole
+        - Arn
+      Family: example-task
+      Memory: 512
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+      - FARGATE
+      TaskRoleArn:
+        Fn::GetAtt:
+        - TaskRole
+        - Arn
