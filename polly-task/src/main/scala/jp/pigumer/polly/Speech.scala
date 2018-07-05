@@ -28,11 +28,8 @@ class Speech(client: AmazonPollyAsync) extends Actor {
 
 object Speech {
 
-  val text =
-    """Please stand by.
-    Your suite's control center is rebooting."""
 
-  val request =
+  def request(text: String) =
     new SynthesizeSpeechRequest().
       withOutputFormat(OutputFormat.Mp3).
       withText(text).

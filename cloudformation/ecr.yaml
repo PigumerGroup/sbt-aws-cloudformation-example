@@ -1,0 +1,9 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  ECR:
+    Type: AWS::ECR::Repository
+Outputs:
+  ECR:
+    Value: !Ref ECR
+    Export:
+      Name: ECR

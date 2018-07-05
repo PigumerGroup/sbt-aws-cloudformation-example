@@ -1,7 +1,7 @@
 sbt-aws-cloudformation-example
 ==============================
 
-# Create S3 Bucket
+# Create AWS Resources
 
 ```
 $ BUCKET_NAME=<S3 Bucket Name> sbt

@@ -8,15 +8,6 @@ import javax.sound.sampled._
 
 object Player {
 
-  private val mixerInfo: Array[Mixer.Info] = {
-    val info = AudioSystem.getMixerInfo()
-    info.zipWithIndex.foreach {
-      case (mixerInfo, index) ⇒
-        println(s"$index: ${mixerInfo.getName}")
-    }
-    info
-  }
-
   def convert(bytes: ByteString) = {
 
     def write(f: OutputStream ⇒ Unit) = {
@@ -46,10 +37,9 @@ object Player {
     write(output ⇒ AudioSystem.write(converted, AudioFileFormat.Type.AU, output))
   }
 
-  def play(index: Int)(bytes: ByteString) = {
+  def play(mixerInfo: Mixer.Info)(bytes: ByteString) = {
       val input = AudioSystem.getAudioInputStream(new ByteArrayInputStream(bytes.toArray))
-      val mixer = mixerInfo(index)
-      val clip = AudioSystem.getClip(mixer)
+      val clip = AudioSystem.getClip(mixerInfo)
       clip.open(input)
       clip.start()
       while (!clip.isRunning) {
