@@ -42,7 +42,7 @@ Resources:
                 taskDefinition = '${TaskArn}',
                 count = 1,
                 launchType = 'FARGATE',
-                networkConfiguration={
+                networkConfiguration = {
                   'awsvpcConfiguration': {
                     'subnets': [
                       '${Subnet1}',
