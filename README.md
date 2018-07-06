@@ -1,6 +1,10 @@
 sbt-aws-cloudformation-example
 ==============================
 
+# Install Docker for Mac
+
+* [Install Docker for Mac](https://docs.docker.com/docker-for-mac/install/)
+
 # Create AWS Resources
 
 ```
@@ -12,6 +16,7 @@ sbt> awscfCreateStack ecscluster
 sbt> awscfCreateStack ecr
 sbt> awscfCreateStack sqs
 sbt> awscfCreateStack task
+sbt> awscfCreateStack lambda
 sbt> assembly
 sbt> exampleTask/docker:stage
 sbt> exampleTask/docker:publishLocal
@@ -22,8 +27,7 @@ sbt> exit
 
 # Run task
 
-* example-task
-* Type: FARGATE
+* Test lambda function: example-lambda
 
 # Google Home
 

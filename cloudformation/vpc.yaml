@@ -53,6 +53,11 @@ Resources:
     Properties:
       SubnetId: !Ref Subnet2
       RouteTableId: !Ref RouteTable
+  VPCSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: private
+      VpcId: !Ref VPC
 Outputs:
   VPC:
     Value: !Ref VPC
@@ -66,3 +71,7 @@ Outputs:
     Value: !Ref Subnet2
     Export:
       Name: subnet2
+  VPCSecurityGroup:
+    Value: !Ref VPCSecurityGroup
+    Export:
+      Name: securitygroup

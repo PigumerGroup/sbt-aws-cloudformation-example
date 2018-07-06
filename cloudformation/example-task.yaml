@@ -51,6 +51,26 @@ Resources:
               - 's3:*'
               - 'polly:*'
             Resource: '*'
+  RoleToAccessECS:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - "events.amazonaws.com"
+          Action:
+          - "sts:AssumeRole"
+      Path: /service-role/
+      Policies:
+      - PolicyName: eventsInvokeECS
+        PolicyDocument:
+          Statement:
+          - Effect: Allow
+            Action:
+              - 'ecs:RunTask'
+            Resource: '*'
   Log:
     Type: AWS::Logs::LogGroup
     Properties:
@@ -85,3 +105,8 @@ Resources:
         Fn::GetAtt:
         - TaskRole
         - Arn
+Outputs:
+  TaskArn:
+    Value: !Ref Task
+    Export:
+      Name: TaskArn

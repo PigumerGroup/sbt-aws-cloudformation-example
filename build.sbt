@@ -16,9 +16,9 @@ lazy val commonSettings = Seq(
 )
 
 lazy val root = (project in file("."))
-  .aggregate(exampleTask
-    , castExample
-    , javaSoundExample)
+  .aggregate(exampleTask,
+    castExample,
+    javaSoundExample)
   .enablePlugins(CloudformationPlugin)
   .settings(commonSettings: _*)
   .settings(
@@ -58,14 +58,19 @@ lazy val root = (project in file("."))
         template = "ecscluster.yaml"
       ),
       Alias("task") → CloudformationStack(
-          stackName = "example-task",
-          template = "example-task.yaml",
-          parameters = Map(
-            "Image" → s"${(awsecrDomain in awsecr).value}/example-task:${version.value}",
-            "BucketName" → BucketName.get
-          ),
-          capabilities = Seq("CAPABILITY_IAM")
-        )
+        stackName = "example-task",
+        template = "example-task.yaml",
+        parameters = Map(
+          "Image" → s"${(awsecrDomain in awsecr).value}/example-task:${version.value}",
+          "BucketName" → BucketName.get
+        ),
+        capabilities = Seq("CAPABILITY_IAM")
+      ),
+      Alias("lambda") → CloudformationStack(
+        stackName = "example-lambda",
+        template = "example-lambda.yaml",
+        capabilities = Seq("CAPABILITY_IAM")
+      )
     ),
     showExports := {
       awscfListExports.value.foreach(e ⇒ println(s"${e.name}, ${e.value}"))
@@ -125,3 +130,4 @@ lazy val javaSoundExample = (project in file("java-sound"))
     ),
     mainClass in assembly := Some("jp.pigumer.javasound.Main")
   )
+

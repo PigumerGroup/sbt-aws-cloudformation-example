@@ -1,0 +1,73 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  LambdaExecutionRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        -
+          Effect: Allow
+          Principal:
+            Service:
+              - 'lambda.amazonaws.com'
+          Action: 'sts:AssumeRole'
+      Path: /
+      Policies:
+        - PolicyName: LambdaExecutionRole
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              -
+                Effect: Allow
+                Action:
+                  - 'iam:PassRole'
+                  - 'logs:*'
+                  - 'ecs:runTask'
+                Resource: '*'
+  Lambda:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      Code:
+        ZipFile:
+          Fn::Sub:
+          - |
+            import boto3
+
+            def lambda_handler(event, context):
+              client = boto3.client('ecs')
+
+              response = client.run_task(
+                cluster = '${ClusterArn}',
+                taskDefinition = '${TaskArn}',
+                count = 1,
+                launchType = 'FARGATE',
+                networkConfiguration={
+                  'awsvpcConfiguration': {
+                    'subnets': [
+                      '${Subnet1}',
+                      '${Subnet2}'
+                    ],
+                    'securityGroups': [
+                      '${SecurityGroup}'
+                    ],
+                    'assignPublicIp': 'ENABLED'
+                  }
+                }
+              )
+
+              print(response)
+
+              return 'Success'
+          - ClusterArn: !ImportValue ECSClusterArn
+            TaskArn: !ImportValue TaskArn
+            Subnet1: !ImportValue subnet1
+            Subnet2: !ImportValue subnet2
+            SecurityGroup: !ImportValue securitygroup
+      FunctionName: example-lambda
+      Handler: index.lambda_handler
+      Role:
+        Fn::GetAtt:
+        - LambdaExecutionRole
+        - Arn
+      Runtime: python3.6

@@ -7,3 +7,10 @@ Outputs:
     Value: !Ref ECSCluster
     Export:
       Name: ECSCluster
+  ECSClusterArn:
+    Value:
+      Fn::GetAtt:
+      - ECSCluster
+      - Arn
+    Export:
+      Name: ECSClusterArn
