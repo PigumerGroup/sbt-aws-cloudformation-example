@@ -59,6 +59,7 @@ Send any message to SampleQueue
 # Java Version
 
 | sdkman         | sbt-aws-cludformation | Java Sound API |
+|----------------|-----------------------|----------------|
 | 8.0.171-oracle | OK | OK |
 | 10.0.0-openjdk | NG | OK |
 | 10.0.1-oracle  | OK | OK |
