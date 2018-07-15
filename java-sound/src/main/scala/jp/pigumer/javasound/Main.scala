@@ -39,6 +39,7 @@ object Main extends App with S3 {
     AmazonSQSAsyncClientBuilder.standard.withRegion(region).build
 
   val bucketName: String = sys.env.getOrElse("BUCKET_NAME", "YOUR BUCKETNAME")
+  val mixerIndex: Int = sys.env.getOrElse("INDEX", "0").toInt
 
   implicit val system = ActorSystem("sbt-aws-cloudformation-example-javasound")
   implicit val materializer: ActorMaterializer = ActorMaterializer()
@@ -64,7 +65,7 @@ object Main extends App with S3 {
         .log("source")
         .withAttributes(Attributes.logLevels(onElement = Logging.InfoLevel))
         .map(Player.convert)
-        .map(Player.play(mixerInfo(0)))
+        .map(Player.play(mixerInfo(mixerIndex)))
         .map(_ ⇒ (message, MessageAction.Delete))
         .async(dispatcher = "akka.stream.sound-io-dispatcher")
     }

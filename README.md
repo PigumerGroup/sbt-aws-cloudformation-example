@@ -1,6 +1,13 @@
 sbt-aws-cloudformation-example
 ==============================
 
+# Install JDK(Mac)
+
+```
+$ curl -s "https://get.sdkman.io" | bash
+$ sdk install java 8.0.171-oracle
+```
+
 # Install Docker for Mac
 
 * [Install Docker for Mac](https://docs.docker.com/docker-for-mac/install/)
@@ -44,7 +51,15 @@ Send any message to SampleQueue
 
 ```
 $ cd java-sound/target/scala-2.12
-$ BUCKET_NAME=<YOUR BUCKET NAME> java -jar javaSoundExample-assembly-0.0.1-SNAPSHOT.jar
+$ BUCKET_NAME=<YOUR BUCKET NAME> INDEX=<Audio Device Index> java -jar javaSoundExample-assembly-0.0.1-SNAPSHOT.jar
 ```
 
 Send any message to SampleQueue
+
+# Java Version
+
+| sdkman         | sbt-aws-cludformation | Java Sound API |
+| 8.0.171-oracle | OK | OK |
+| 10.0.0-openjdk | NG | OK |
+| 10.0.1-oracle  | OK | OK |
+| 10.0.1-zulu    | OK | OK |

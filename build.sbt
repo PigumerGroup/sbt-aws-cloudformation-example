@@ -12,7 +12,8 @@ val showARN = taskKey[Unit]("")
 lazy val commonSettings = Seq(
   organization := "com.pigumer",
   scalaVersion := "2.12.6",
-  javacOptions ++= Seq("-target", "1.8"),
+  scalacOptions ++= Seq("-target:jvm-1.8"),
+  javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),
   version := "0.0.1-SNAPSHOT"
 )
 
