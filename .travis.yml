@@ -1,0 +1,9 @@
+language: scala
+scala:
+- 2.12.6
+sbt:
+- 1.1.6
+jdk:
+- oraclejdk8
+script:
+- sbt ';compile ;exampleTask/docker:stage'

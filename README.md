@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/PigumerGroup/sbt-aws-cloudformation-example.svg?branch=master)](https://travis-ci.org/PigumerGroup/sbt-aws-cloudformation-example)
+
 sbt-aws-cloudformation-example
 ==============================
 
